@@ -37,23 +37,23 @@ import static java.lang.System.out;
  */
 public class CopyTest {
     public static void main(String[] args) {
-        out.println("[Test1] 拷贝int类型的数组：");
+        /*测试1*/
         int[] test1Array = {1, 3, 5, 7, 9, 11};
-        out.print("原数组为：");
-        out.println(Arrays.toString(test1Array));
-        out.print("拷贝数组为：");
-        int[] test1Copy = (int[]) CopyOf.copyOf(test1Array, test1Array.length);
-        out.println(Arrays.toString(test1Copy));
+        out.println("【测试1】整型数组拷贝。\n" +
+                "原数组 test1Array = " + Arrays.toString(test1Array));
+        out.println("复制数组 test1Copy = " + Arrays.toString(
+                (int[])CopyOf.copyOf(test1Array, test1Array.length)
+        ));
 
-        Employee[] emp = new Employee[3];
-        emp[0] = new Employee("Karl Marx", 2011, Calendar.JANUARY, 11, 20_000);
-        emp[1] = new Employee("Engles", 2015, Calendar.MARCH, 12, 15_000);
-        emp[2] = new Employee("HelloKitty", 2011, Calendar.MAY, 15, 10_000);
-
-        out.println("原数组为：");
-        out.println(Arrays.toString(emp));
-        Employee[] empCopy = (Employee[]) CopyOf.copyOf(emp, emp.length);
-        out.println("数组副本为：");
-        out.println(Arrays.toString(empCopy));
+        /*测试2*/
+        Employee[] ems = new Employee[3];
+        ems[0] =new Employee("Karl Marx", 2011, Calendar.MARCH, 21, 20_000);
+        ems[1] =new Employee("Engels Bill", 20131, Calendar.APRIL, 11, 15_000);
+        ems[2] =new Employee("Franklin Losford", 1988, Calendar.MAY, 1, 50_000);
+        out.println("【测试2】任意对象数组拷贝。\n" +
+                "原数组 ems = " + Arrays.toString(ems));
+        out.println("复制数组 emsCopy = " + Arrays.toString(
+                (Employee[]) CopyOf.copyOf(ems, ems.length)
+        ));
     }
 }
