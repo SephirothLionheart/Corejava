@@ -33,11 +33,14 @@ import java.lang.reflect.Array;
  */
 public class CopyOf {
     /**
-     * @param array
-     * @param len
-     * @return
+     * 实现任意数组的通用拷贝
+     *
+     * @param array [Object]  任意类型的数组(采用Object基类是为了保障基本类型数组的正常匹配)
+     * @param len   [int]     数组长度
+     * @return [Object]        任意类型数组的副本
+     * @see java.util.Arrays#copyOf(Object[], int)
      */
-    public static Object copyOf(Object array, int len) {
+    public static Object copyOf(Object array, int length) {
         if (array == null) {
             return null;
         }
@@ -47,7 +50,8 @@ public class CopyOf {
         }
         Class componentType = cl.getComponentType();
         Object newArray = Array.newInstance(componentType, Array.getLength(array));
-        System.arraycopy(array, 0, newArray, 0, Array.getLength(array));
+        System.arraycopy(array, 0, newArray, 0, Math.min(length, Array.getLength(array)));
         return newArray;
     }
+
 }
