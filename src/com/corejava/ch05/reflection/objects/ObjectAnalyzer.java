@@ -1,4 +1,4 @@
-package com.corejava.ch05.reflection;
+package com.corejava.ch05.reflection.objects;
 
 /*
  *====================================================================
@@ -28,9 +28,8 @@ package com.corejava.ch05.reflection;
         import java.lang.reflect.AccessibleObject;
         import java.lang.reflect.Array;
         import java.lang.reflect.Field;
+        import java.lang.reflect.Modifier;
         import java.util.ArrayList;
-
-        import static java.lang.System.out;
 
 /**
  * 重写一个toString函数，给定参数为一个对象或数组:
@@ -45,12 +44,7 @@ package com.corejava.ch05.reflection;
  * @see         java.lang.Class
  */
 public class ObjectAnalyzer {
-    ArrayList <Object> visited = new ArrayList <>(); /*存放访问过的对象*/
-    String objectName;
-
-    public ObjectAnalyzer(String objectName) {
-        this.objectName = objectName;
-    }
+    ArrayList <Object> visited = new ArrayList <>();
 
     /**
      * 递归打印Obj对象或对象数组中的元素数值
@@ -59,7 +53,7 @@ public class ObjectAnalyzer {
      * @return [String]    对象/数组的对象打印
      */
     public String toString(Object obj) {
-        String outputStr = "";
+        String outStr = "";
         if (obj == null) {
             return "null";
         }
@@ -67,55 +61,56 @@ public class ObjectAnalyzer {
         if (cl == String.class) {
             return (String) obj;
         }
-
-        if (this.visited.contains(obj)) {
-            return "...";   // 跳出条件，也是递归函数的基本情况。
+        if (this.visited.contains(obj)) {   // 防止循环使用
+            return "...";
         }
-
-        outputStr = obj.getClass().getName() + " "
-                + this.objectName + " = [";
+        visited.add(obj);
 
         if (cl.isArray()) {
             Class componentType = cl.getComponentType();
-            outputStr += componentType.getName() +"[]" + " = [";
-
+            outStr += componentType.getName() + "[]{";
             for (int i = 0; i < Array.getLength(obj); i++) {
-                if (!outputStr.endsWith("[")) {
-                    outputStr += ", ";
+                if (i > 0) {
+                    outStr += ", ";
                 }
-
                 Object val = Array.get(obj, i);
                 if (componentType.isPrimitive()) {
-                    outputStr += val;
+                    outStr += val;
                 } else {
-                    toString(outputStr);
+                    outStr += toString(val);
                 }
             }
+            return outStr + "}";
         }
 
-        do {  // 当 obj是一个对象而不是一个数组的时候，可以认为是递归的基本情况
+
+        outStr += cl.getName() + "[";
+        int indents = 0;
+        do {
             Field[] fields = cl.getDeclaredFields();
             AccessibleObject.setAccessible(fields, true);
+            indents ++;
             for (Field fd : fields) {
                 Class fieldType = fd.getType();
-                if (!outputStr.endsWith("["))
-                    outputStr += ",";
-                outputStr += "\n\t" + fieldType.getName()
-                        + " " + fd.getName() + " = ";
-                try {
-                    Object val = fd.get(obj);
-                    if (fieldType.isPrimitive()) {
-                        outputStr += val;
-                    } else {
-                        toString(val);
+                if (!Modifier.isStatic(fd.getModifiers())) {
+                    if (!outStr.endsWith("[")) {
+                        outStr += ", ";
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    outStr += fd.getName() + "=";
+                    try {
+                        Object val = fd.get(obj);
+                        if (fieldType.isPrimitive()) {
+                            outStr += val;
+                        } else {
+                            outStr += toString(val);
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             cl = cl.getSuperclass();
-        } while (cl != null);   // 仅当obj为Object类对象，接口，数组时， cl为null。
-
-        return outputStr;
+        } while (cl != null);
+        return  outStr + "]";
     }
 }

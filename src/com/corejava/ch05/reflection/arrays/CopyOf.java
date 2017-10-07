@@ -32,12 +32,17 @@ import java.lang.reflect.Array;
  * @see         java.util.Arrays#copyOf(Object[], int)
  */
 public class CopyOf {
-    public static Object copyOf(Object[] array, int len) {
+    /**
+     * @param array
+     * @param len
+     * @return
+     */
+    public static Object copyOf(Object array, int len) {
         if (array == null) {
             return null;
         }
         Class cl = array.getClass();
-        if (cl.isArray()) {
+        if (!cl.isArray()) {
             return null;
         }
         Class componentType = cl.getComponentType();
