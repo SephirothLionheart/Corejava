@@ -35,38 +35,38 @@ import static java.lang.System.out;
  * @see
  */
 public class MethodPointerTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchMethodException {
         // 类A的Class对象为A.class
-        try {
-            Method square = MethodPointerTest.class.getMethod("square", double.class);
-            Method sqrt = MethodPointerTest.class.getMethod("sqrt", double.class);
-            printTable(1, 10, 10, square);
-            out.println();
-            printTable(1, 10, 10, sqrt);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        //获得Method对象
+        Method squareMthd = MethodPointerTest.class.getMethod("square", double.class);
+        printTable(1.0000, 10.0000, 9, squareMthd);
+
+        Method sqrtMthd = MethodPointerTest.class.getMethod("sqrt", double.class);
+        printTable(1.0000, 10.0000, 9, sqrtMthd);
+
     }
 
     /**
-     * 返回平方数
-     * @param x     [double]    自变量x
-     * @return      [double]    x的平方
+     * @param x [double]    自变量x
+     * @return [double]    x的平方
      */
     public static double square(double x) {
-        return x*x;
+        return x * x;
     }
 
     /**
      * 返回开平方根
-     * @param x     [double]    自变量x
-     * @return      [double]    x的平方根
+     *
+     * @param x [double]    自变量x
+     * @return [double]    x的平方根
      */
     public static double sqrt(double x) {
         return Math.sqrt(x);
     }
+
     /**
      * 以方法名称作为表头（TableHead）
+     *
      * 第一列为自变量x，第二列为因变量 y = f(x), 其中f由Method对象指定。
      * 绘制表格形如
      *   METHOD
@@ -82,17 +82,12 @@ public class MethodPointerTest {
      * @param f         [Method]   执行的方法（映射）
      */
     public static void printTable(double xFrom, double xTo, int steps, Method f) {
-        if (xTo < xFrom) {
-            err.println("xFrom should be no greater than xTo");
-            return;
-        }
+        double step = (xTo - xFrom) / steps;
         out.println(f.getName());
-        out.println("-----------------------------------------------");
-        double dx = (xTo - xFrom) / steps;
+        out.println("--------------------------------------------------");
         try {
-            for (double x = xFrom; x <= xTo ; x += dx) {
-                double y = (double) f.invoke(null, x);  // f.invoke 当Method为静态方法对象时，invoke为null。
-                out.printf("%4.2f\t|\t%4.2f\n", x, y);
+            for (double x = xFrom;  x < xTo ; x += step) {
+                out.printf("%4.2f\t|\t%4.2f\n", x, f.invoke(null, x));
             }
             out.printf("%4.2f\t|\t%4.2f\n", xTo, f.invoke(null, xTo));
         } catch (IllegalAccessException e) {
@@ -100,6 +95,8 @@ public class MethodPointerTest {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        out.println("-----------------------------------------------");
+        out.println("==================================================");
+
     }
+
 }
