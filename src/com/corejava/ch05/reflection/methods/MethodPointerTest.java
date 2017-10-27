@@ -89,7 +89,8 @@ public class MethodPointerTest {
             for (double x = xFrom;  x < xTo ; x += step) {
                 out.printf("%4.2f\t|\t%4.2f\n", x, f.invoke(null, x));
             }
-            out.printf("%4.2f\t|\t%4.2f\n", xTo, f.invoke(null, xTo));
+            out.printf("%4.2f\t|\t%4.2f\n", xTo,
+                    f.invoke(null, xTo));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
